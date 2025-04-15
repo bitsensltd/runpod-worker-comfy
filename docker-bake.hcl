@@ -14,6 +14,10 @@ variable "HUGGINGFACE_ACCESS_TOKEN" {
   default = ""
 }
 
+variable "CIVITAI_ACCESS_TOKEN" {
+  default = ""
+}
+
 group "default" {
   targets = ["base", "sdxl", "sd3", "flux1-schnell", "flux1-dev"]
 }
@@ -68,6 +72,7 @@ target "flux1-dev" {
   args = {
     MODEL_TYPE = "flux1-dev"
     HUGGINGFACE_ACCESS_TOKEN = "${HUGGINGFACE_ACCESS_TOKEN}"
+    CIVITAI_ACCESS_TOKEN = "${CIVITAI_ACCESS_TOKEN}"
   }
   tags = ["${DOCKERHUB_REPO}/${DOCKERHUB_IMG}:${RELEASE_VERSION}-flux1-dev"]
   inherits = ["base"]
