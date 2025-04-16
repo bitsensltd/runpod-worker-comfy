@@ -27,7 +27,7 @@ RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 RUN pip install comfy-cli
 
 # Install ComfyUI
-RUN /usr/bin/yes | comfy --workspace /comfyui install --cuda-version 11.8 --nvidia --version 0.3.26
+RUN /usr/bin/yes | comfy --workspace /comfyui install --cuda-version 11.8 --nvidia --version 0.3.27
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
@@ -55,32 +55,32 @@ RUN /restore_snapshot.sh
 CMD ["/start.sh"]
 
 # Stage 2: Download models
-FROM base as downloader
+# FROM base as downloader
 
-ARG HUGGINGFACE_ACCESS_TOKEN
-ARG CIVITAI_ACCESS_TOKEN
-ARG MODEL_TYPE
+# ARG HUGGINGFACE_ACCESS_TOKEN
+# ARG CIVITAI_ACCESS_TOKEN
+# ARG MODEL_TYPE
 
 # Change working directory to ComfyUI
-WORKDIR /comfyui
+# WORKDIR /comfyui
 
 # Create necessary directories
-RUN mkdir -p models/unet models/style_models models/loras models/clip_vision models/clip models/vae
+# RUN mkdir -p models/unet models/style_models models/loras models/clip_vision models/clip models/vae
 
 # Download FLUX.1-dev model files
-RUN wget --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/unet/flux1-dev-Q8_0.gguf https://huggingface.co/city96/FLUX.1-dev-gguf/resolve/main/flux1-dev-Q8_0.gguf && \
-  wget --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/style_models/flux1-redux-dev.safetensors https://huggingface.co/black-forest-labs/FLUX.1-Redux-dev/resolve/main/flux1-redux-dev.safetensors && \
-  wget -O models/loras/studiochatgpt-ghibli-v1.safetensors "https://civitai.com/api/download/models/1595505?type=Model&format=SafeTensor&token=${CIVITAI_ACCESS_TOKEN}" && \
-  wget -O models/clip_vision/sigclip_vision_patch14_384.safetensors https://huggingface.co/Comfy-Org/sigclip_vision_384/resolve/main/sigclip_vision_patch14_384.safetensors && \
-  wget -O models/clip/clip_l.safetensors https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors && \
-  wget -O models/clip/t5-v1_1-xxl-encoder-Q8_0.gguf https://huggingface.co/city96/t5-v1_1-xxl-encoder-gguf/resolve/main/t5-v1_1-xxl-encoder-Q8_0.gguf && \
-  wget --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/vae/ae.safetensors https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors
+# RUN wget --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/unet/flux1-dev-Q8_0.gguf https://huggingface.co/city96/FLUX.1-dev-gguf/resolve/main/flux1-dev-Q8_0.gguf && \
+#   wget --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/style_models/flux1-redux-dev.safetensors https://huggingface.co/black-forest-labs/FLUX.1-Redux-dev/resolve/main/flux1-redux-dev.safetensors && \
+#   wget -O models/loras/studiochatgpt-ghibli-v1.safetensors "https://civitai.com/api/download/models/1595505?type=Model&format=SafeTensor&token=${CIVITAI_ACCESS_TOKEN}" && \
+#   wget -O models/clip_vision/sigclip_vision_patch14_384.safetensors https://huggingface.co/Comfy-Org/sigclip_vision_384/resolve/main/sigclip_vision_patch14_384.safetensors && \
+#   wget -O models/clip/clip_l.safetensors https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors && \
+#   wget -O models/clip/t5-v1_1-xxl-encoder-Q8_0.gguf https://huggingface.co/city96/t5-v1_1-xxl-encoder-gguf/resolve/main/t5-v1_1-xxl-encoder-Q8_0.gguf && \
+#   wget --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/vae/ae.safetensors https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors
 
 # Stage 3: Final image
 FROM base as final
 
 # Copy models from stage 2 to the final image
-COPY --from=downloader /comfyui/models /comfyui/models
+# COPY --from=downloader /comfyui/models /comfyui/models
 
 # Start container
 CMD ["/start.sh"]
